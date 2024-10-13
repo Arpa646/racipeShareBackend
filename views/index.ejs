@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Password</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Arial", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+      }
+
+      h3 {
+        margin: 20px;
+        color: #302f2f;
+      
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      input[type="password"] {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+      }
+
+      input[type="password"]:focus {
+        border-color: #6e8efb;
+        outline: none;
+      }
+
+      input[type="submit"] {
+        background-color: #6e8efb;
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #4f6acb;
+      }
+
+      .message {
+        color: #555;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+      }
+    </style>
+    <script>
+      var status = "<%- JSON.stringify(status) %>";
+
+      if (JSON.parse(status) == "verified") {
+        if (confirm("Do you want to login?")) {
+          window.location.href = "http://localhost:3000/";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <h3>Reset Password for <%= email %></h3>
+      <form action="" method="post">
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="New Password"
+          required
+        />
+        <input
+          type="password"
+          name="confirm-password"
+          id="confirm-password"
+          placeholder="Confirm Password"
+          required
+        />
+        <input type="submit" value="Reset Password" />
+      </form>
+      <p class="message">Please enter your new password and confirm it.</p>
+    </div>
+  </body>
+</html>
