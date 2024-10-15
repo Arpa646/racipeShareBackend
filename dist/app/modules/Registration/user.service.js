@@ -37,13 +37,14 @@ const createUserIntoDB = (userData) => __awaiter(void 0, void 0, void 0, functio
 });
 const getAllUserFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_model_1.UserRegModel.find({ isDeleted: false }); // Filter for isDeleted being false
-    if (!result || result.length === 0) { // Check if result is empty
+    if (!result || result.length === 0) {
+        // Check if result is empty
         throw new Error("No data Found");
     }
     return result;
 });
 const getUserByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('hii', id);
+    console.log("hii", id);
     const result = yield user_model_1.UserRegModel.findOne({ _id: id });
     return result;
 });
@@ -85,17 +86,21 @@ const updateUserProfile = (userId, updateData) => __awaiter(void 0, void 0, void
                 name: updateData.name,
                 email: updateData.email,
                 phone: updateData.phone,
-                address: updateData.address
-            }
+                address: updateData.address,
+            },
         }, { new: true, runValidators: true } // Return the updated document, and run validators
         );
         if (!updatedUser) {
-            throw new Error('User not found');
+            throw new Error("User not found");
         }
         return updatedUser;
     }
     catch (error) {
-        throw new Error(error.message);
+        // Type assertion to Error
+        if (error instanceof Error) {
+            throw new Error(error.message); // Safely access the message property
+        }
+        throw new Error("An unknown error occurred"); // Fallback for unknown error type
     }
 });
 exports.UserServices = {
@@ -103,7 +108,8 @@ exports.UserServices = {
     getAllUserFromDB,
     getUserByIdFromDB,
     deleteUserInDB,
-    updateUserProfile
+    updateUserStatusInDB,
+    updateUserProfile,
 };
 // const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
 //   const session = await mongoose.startSession();

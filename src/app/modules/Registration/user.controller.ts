@@ -243,7 +243,7 @@ const unfollowUser = async (
   }
 };
 
-const updateProfile = async (req, res) => {
+const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = req.params.id; // Assuming you get the user ID from a JWT middleware
     const { name, email, phone, address } = req.body;
@@ -263,9 +263,11 @@ const updateProfile = async (req, res) => {
       data: updatedUser,
     });
   } catch (error) {
+    // error টাইপ চেক করা হচ্ছে
     return res.status(500).json({
       success: false,
-      message: error.message || "Failed to update user profile",
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error instanceof Error ? error.message : "Failed to update user profile",
     });
   }
 };

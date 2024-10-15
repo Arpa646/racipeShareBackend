@@ -48,17 +48,23 @@ const getRecipeByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, function* 
 });
 const getRecipeByEmailFromDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Find the recipe associated with the given email
-        const recipe = yield recipie_model_1.default.findOne({
-            email: email,
+        // Find all recipes where the user has the given email and the recipe is not deleted
+        const recipes = yield recipie_model_1.default.find({
             isDeleted: false,
+        }).populate({
+            path: "user",
+            match: { email: email }, // Matching user by email
         });
-        // Return the recipe if found, otherwise null
-        return recipe;
+        // Filter out any recipes that didn't match the user by email (if user population fails)
+        const filteredRecipes = recipes.filter((recipe) => recipe.user);
+        // If no recipes are found, return an empty array
+        if (filteredRecipes.length === 0) {
+            return null;
+        }
+        return filteredRecipes; // Return all matching recipes with populated user details
     }
     catch (error) {
-        // Handle or log the error as needed
-        throw new Error("Error fetching recipe by email: " + error.message);
+        throw new Error("Error fetching recipes by email: " + error.message);
     }
 });
 const deleteRecipeInDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -74,17 +80,20 @@ const deleteRecipeInDB = (id) => __awaiter(void 0, void 0, void 0, function* () 
 });
 const updateReciceStatusInDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(id);
-    // Find the user by id to get the current value of isBlock
-    // const recipe = await RecipeModel.find({ isDeleted: false }).populate("user");
+    // Find the recipe by id
     const recipe = yield recipie_model_1.default.findById(id);
-    // Toggle the isBlock field to the opposite of its current value
+    // Check if the recipe exists
+    if (!recipe) {
+        throw new Error("Recipe not found");
+    }
+    // Toggle the isPublished status
     const result = yield recipie_model_1.default.findOneAndUpdate({ _id: id }, // Find the recipe by _id
     {
         isPublished: !recipe.isPublished, // Toggle the isPublished status
     }, { new: true } // Return the updated document
     );
     if (!result) {
-        throw new Error("Failed to update user");
+        throw new Error("Failed to update recipe");
     }
     console.log(result);
     return result;

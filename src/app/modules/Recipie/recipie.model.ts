@@ -1,14 +1,15 @@
-import  {recipie}  from './recipie.inteface';
+import  {Recipe}  from './recipie.interface';
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 // Define the schema for the Booking model
 
 
-const recipeSchema: Schema<recipie> = new Schema<recipie>({
+const recipeSchema: Schema<Recipe> = new Schema<Recipe>({
   title: {
     type: String,
     required: true,
   },
+ 
   time: {
     type: String,
     required: true,
@@ -27,7 +28,8 @@ const recipeSchema: Schema<recipie> = new Schema<recipie>({
   },
 
   comments: [
-    {
+    {   
+     
       userId: { type: Schema.Types.ObjectId, ref: "User" }, // Referencing the user ID from User model
         // Name or username of the commenter
       comment: { type: String, required: true }, // The actual comment
@@ -78,7 +80,7 @@ const recipeSchema: Schema<recipie> = new Schema<recipie>({
 });
 
 // Create the Booking model using the schema
-const RecipeModel: Model<recipie> = mongoose.model<recipie>(
+const RecipeModel: Model<Recipe> = mongoose.model<Recipe>(
   "recipie",
   recipeSchema
 );

@@ -228,9 +228,11 @@ const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
+        // error টাইপ চেক করা হচ্ছে
         return res.status(500).json({
             success: false,
-            message: error.message || "Failed to update user profile",
+            statusCode: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+            message: error instanceof Error ? error.message : "Failed to update user profile",
         });
     }
 });

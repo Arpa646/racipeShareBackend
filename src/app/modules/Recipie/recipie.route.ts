@@ -20,5 +20,5 @@ router.post("/dislike", RecipieController.dislikeRecipe);
 
 router.delete("/:id", RecipieController.deleteRecipe);
 router.get("/:id", RecipieController.getSingleRecipe);
-router.get("/", RecipieController.getSingleRecipeByEmail);
+router.get("/userrecipe/:email", RecipieController.getSingleRecipeByEmail);
 export const RecipieRoutes = router;

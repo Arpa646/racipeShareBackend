@@ -43,19 +43,30 @@ const getRecipeByIdFromDB = async (id: string) => {
 
   return result;
 };
+
 const getRecipeByEmailFromDB = async (email: string) => {
   try {
-    // Find the recipe associated with the given email
-    const recipe = await RecipeModel.findOne({
-      email: email,
+    // Find all recipes where the user has the given email and the recipe is not deleted
+    const recipes = await RecipeModel.find({
       isDeleted: false,
+    }).populate({
+      path: "user",
+      match: { email: email }, // Matching user by email
     });
 
-    // Return the recipe if found, otherwise null
-    return recipe;
-  } catch (error) {
-    // Handle or log the error as needed
-    throw new Error("Error fetching recipe by email: " + error.message);
+    // Filter out any recipes that didn't match the user by email (if user population fails)
+    const filteredRecipes = recipes.filter((recipe) => recipe.user);
+
+    // If no recipes are found, return an empty array
+    if (filteredRecipes.length === 0) {
+      return null;
+    }
+
+    return filteredRecipes; // Return all matching recipes with populated user details
+  } catch (error: unknown) {
+    throw new Error(
+      "Error fetching recipes by email: " + (error as Error).message
+    );
   }
 };
 
@@ -79,12 +90,15 @@ const deleteRecipeInDB = async (id: string) => {
 const updateReciceStatusInDB = async (id: string) => {
   console.log(id);
 
-  // Find the user by id to get the current value of isBlock
-
-  // const recipe = await RecipeModel.find({ isDeleted: false }).populate("user");
+  // Find the recipe by id
   const recipe = await RecipeModel.findById(id);
 
-  // Toggle the isBlock field to the opposite of its current value
+  // Check if the recipe exists
+  if (!recipe) {
+    throw new Error("Recipe not found");
+  }
+
+  // Toggle the isPublished status
   const result = await RecipeModel.findOneAndUpdate(
     { _id: id }, // Find the recipe by _id
     {
@@ -94,14 +108,20 @@ const updateReciceStatusInDB = async (id: string) => {
   );
 
   if (!result) {
-    throw new Error("Failed to update user");
+    throw new Error("Failed to update recipe");
   }
 
   console.log(result);
   return result;
 };
 
-const updateRecipe = async (id, updatedData) => {
+interface UpdateRecipeData {
+  title?: string;
+  time?: string; // or number, depending on how you represent time
+  image?: string; // URL or path to the image
+  recipe?: string; // Detailed recipe instructions
+}
+const updateRecipe = async (id: string, updatedData: UpdateRecipeData) => {
   try {
     // Find the recipe by ID
     const recipe = await RecipeModel.findById(id);
@@ -128,18 +148,6 @@ const updateRecipe = async (id, updatedData) => {
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
 export const RecipieServices = {
   createRecipe,
   getAllRecipiesFromDB,
@@ -148,5 +156,4 @@ export const RecipieServices = {
   deleteRecipeInDB,
   updateReciceStatusInDB,
   updateRecipe,
-
 };

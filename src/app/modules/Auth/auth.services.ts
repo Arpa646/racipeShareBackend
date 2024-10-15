@@ -88,7 +88,7 @@ const requestPasswordReset = async (email: string) => {
     to: email,
     subject: 'Test Email',
     text: link
-  }, (error, info) => {
+  }, (error: any, info: any) => {
     if (error) {
       return console.log(error);
     }

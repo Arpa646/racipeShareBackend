@@ -19,5 +19,5 @@ router.post("/like", recipie_controller_1.RecipieController.likeRecipe);
 router.post("/dislike", recipie_controller_1.RecipieController.dislikeRecipe);
 router.delete("/:id", recipie_controller_1.RecipieController.deleteRecipe);
 router.get("/:id", recipie_controller_1.RecipieController.getSingleRecipe);
-router.get("/", recipie_controller_1.RecipieController.getSingleRecipeByEmail);
+router.get("/userrecipe/:email", recipie_controller_1.RecipieController.getSingleRecipeByEmail);
 exports.RecipieRoutes = router;

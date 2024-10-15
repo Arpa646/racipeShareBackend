@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 
 
 
-import FacilityModel from "../Facility/facility.model";
 import { v4 as uuidv4 } from "uuid";
 
 export const makePremium = async (userId: string) => {
@@ -53,7 +52,11 @@ export const makePremium = async (userId: string) => {
     // Return the payment response data
     return paymentResponse.data;
   } catch (err) {
-    throw new Error(`Failed to make user premium: ${err.message}`);
+    if (err instanceof Error) {
+      throw new Error(`Failed to make user premium: ${err.message}`);
+    } else {
+      throw new Error("Failed to make user premium: Unknown error");
+    }
   }
 };
 

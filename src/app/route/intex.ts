@@ -2,11 +2,11 @@ import express from 'express';
 
 import { AuthRoutes } from '../modules/Auth/auth.route';
 import { UserRoutes } from '../modules/Registration/user.route';
-import { FacilityRoutes } from '../modules/Facility/facility.route';
-import { BookingRoutes } from '../modules/Booking/booking.route';
+
+
 import { PremiumRoutes } from '../modules/Premium/premium.route';
 import { RecipieRoutes } from '../modules/Recipie/recipie.route';
-import { slotRoutes } from '../modules/CheckAvailable/availableslot.route';
+
 
 
 const router=express.Router()
@@ -25,16 +25,8 @@ const modulerRoutes=[
         route:AuthRoutes,
         
     },
-    {
-        path:'/facility',
-        route:FacilityRoutes,
-        
-    },
-    {
-        path:'/bookings',
-        route:BookingRoutes,
-        
-    },
+   
+   
     {
         path:'/premium',
         route:PremiumRoutes,
@@ -45,11 +37,7 @@ const modulerRoutes=[
         route:RecipieRoutes,
         
     },
-    {
-        path:'/check-availability',
-        route:slotRoutes,
-        
-    },
+   
  
 ]
 

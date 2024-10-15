@@ -44,7 +44,12 @@ const makePremium = (userId) => __awaiter(void 0, void 0, void 0, function* () {
         return paymentResponse.data;
     }
     catch (err) {
-        throw new Error(`Failed to make user premium: ${err.message}`);
+        if (err instanceof Error) {
+            throw new Error(`Failed to make user premium: ${err.message}`);
+        }
+        else {
+            throw new Error("Failed to make user premium: Unknown error");
+        }
     }
 });
 exports.makePremium = makePremium;

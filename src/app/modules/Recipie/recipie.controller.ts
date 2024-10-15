@@ -6,46 +6,70 @@ import { RecipieServices } from "./recipie.services";
 import { StatusCodes } from "http-status-codes";
 import { Request, Response, NextFunction } from "express";
 import RecipeModel from "./recipie.model";
+import { ObjectId } from "mongodb";
+import { Rating } from "./recipie.interface"; // If 'interfaces' is one level up
+
+// interface Rating {
+//   userId: string; // ব্যবহারকারীর আইডি
+//   rating: number; // রেটিং সংখ্যা
+//   recipeId: string; // রেসিপির আইডি
+// }
+interface User {
+  _id?: string;
+  name: string;
+  email: string;
+  password: string;
+}
+interface Comment {
+  _id?: string;
+  userId: User;
+  comment: string;
+}
+
 const createRecipie = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { title, time, image, recipe, user, rating } = req.body;
 
-    const recipieData = {
+    interface Recipe {
+      title: string; // Title of the recipe
+      time: string; // Time required to prepare the recipe
+      image: string; // URL of the recipe image
+      recipe: string; // Detailed instructions of the recipe
+      user: string; // ID of the user who created the recipe
+      rating: number; // Rating of the recipe
+      isPublished: boolean; // Whether the recipe is published
+      isDeleted: boolean; // Whether the recipe is deleted
+      createdAt: Date; // Date the recipe was created
+      updatedAt: Date; // Date the recipe was last updated
+      likedBy: string[]; // List of user IDs who liked the recipe
+      dislikedBy: string[]; // List of user IDs who disliked the recipe
+    }
+
+    const recipieData: Recipe = {
+      // Or however you're generating IDs
       title,
       time,
-      image, // Optional, may not exist
+      image,
       recipe,
-      user, // Should be a valid user ObjectId
+      user,
       rating,
-      comment: [],
-      isPublish: true,
-      isDelete: false,
+      isPublished: true,
+      isDeleted: false,
+      createdAt: new Date(), // Set to the current date
+      updatedAt: new Date(), // Set to the current date
+      likedBy: [], // Initialize as an empty array
+      dislikedBy: [], // Initialize as an empty array
     };
+
     console.log(recipieData);
-    //  const validationResult = facilityValidationSchema.safeParse(facilityData);
-    // console.log(validationResult);
-    // if (!validationResult.success) {
-    //   // Collect validation errors
-    //   const validationErrors = validationResult.error.errors.map(
-    //     (error: any) => ({
-    //       path: Array.isArray(error.path) ? error.path.join(".") : error.path,
-    //       message: error.message,
-    //     })
-    //   );
+    // এখানে মন্তব্য করা যাচাইয়ের অংশ যোগ করুন (যদি প্রয়োজন হয়)
 
-    //   // Return validation errors as JSON response
-    //   return res.status(400).json({
-    //     success: false,
-    //     errors: validationErrors,
-    //   });
-    // }
-
-    const result = await RecipieServices.createRecipe(recipieData);
+    const result = await RecipieServices.createRecipe(recipieData as any);
     console.log(result);
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "facility created  succesfully",
+      message: "Recipe created successfully", // এখানে সঠিক মেসেজ ব্যবহার করুন
       data: result,
     });
   }
@@ -124,8 +148,8 @@ const getSingleRecipe = async (req: Request, res: Response) => {
 };
 const getSingleRecipeByEmail = async (req: Request, res: Response) => {
   try {
-    const { email } = req.query; // Get the user's email from request query
-
+    const { email } = req.params; // Get the user's email from request query
+    console.log(email);
     if (!email) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
@@ -240,19 +264,26 @@ const addComment = async (req: Request, res: Response) => {
   try {
     const { recipeId, userId, comment } = req.body;
     console.log(recipeId, userId, comment);
+
     // Find the recipe by ID
     const recipe = await RecipeModel.findById(recipeId);
     console.log(recipe);
+
     if (!recipe) {
       return res.status(404).json({ message: "Recipe not found" });
+    }
+
+    // Ensure that the comments array is initialized
+    if (!recipe.comments) {
+      recipe.comments = []; // Initialize comments if it is undefined
     }
 
     // Create a new comment object
     const newComment = {
       userId, // ID of the user commenting
-      // Username or user's name
       comment, // Comment text
-      // Optional rating (1 to 5)
+      // Optional rating (if applicable, you can include this based on your design)
+      // rating: rating || null, // Uncomment if you have a rating field
     };
 
     // Add the new comment to the comments array of the recipe
@@ -266,44 +297,53 @@ const addComment = async (req: Request, res: Response) => {
       comments: recipe.comments, // Return updated comments
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    console.error("Error adding comment:", error); // Log the error for debugging
+    res
+      .status(500)
+      .json({ message: "Server error", error: (error as Error).message });
   }
 };
 
 const postRating = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { recipeId, rating, userId } = req.body; // Expecting recipeId, rating, and userId
+    const { recipeId, rating, userId } = req.body;
 
     // Find the recipe by ID
     const recipe = await RecipeModel.findById(recipeId);
 
+    // Check if the recipe exists
     if (!recipe) {
       return res
         .status(404)
         .json({ success: false, message: "Recipe not found" });
     }
 
+    // Ensure ratings is initialized
+    if (!recipe.ratings) {
+      recipe.ratings = []; // If ratings is undefined, initialize as an empty array
+    }
+
     // Check if the user has already rated the recipe
-    const existingRating = recipe.ratings.find((r) => {
-      console.log("r.userId:", r.userId.toString()); // Convert ObjectId to string for clarity
-      console.log("userId:", userId); // Assuming userId is already a string
-      return r.userId.toString() === userId; // Convert r.userId to string for comparison
-    });
+    const existingRating = recipe.ratings.find(
+      (r: Rating) => r.userId.toString() === userId
+    );
 
     if (existingRating) {
-      // Update the existing rating if user has already rated
-      console.log("yes duplicatite");
+      // Update the existing rating
       existingRating.rating = rating;
     } else {
-      console.log("no duplicatite");
-      // Add a new rating and userId if no previous rating found
+      // Add a new rating
       recipe.ratings.push({ userId, rating });
     }
 
     // Recalculate the average rating
     const totalRatings = recipe.ratings.length;
-    const sumOfRatings = recipe.ratings.reduce((sum, r) => sum + r.rating, 0);
-    const averageRating = sumOfRatings / totalRatings;
+    const sumOfRatings = recipe.ratings.reduce(
+      (sum: number, r: Rating) => sum + (r.rating || 0), // Handle possible undefined rating
+      0
+    );
+
+    const averageRating = totalRatings ? sumOfRatings / totalRatings : 0; // Avoid division by zero
 
     // Update the recipe's average rating
     recipe.rating = averageRating;
@@ -314,14 +354,14 @@ const postRating = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json({
       success: true,
       message: "Rating submitted successfully",
-      rating: recipe.rating, // Send back the updated average rating
+      rating: recipe.rating,
     });
   } catch (error) {
-    next(error); // Pass the error to the error handler
+    next(error);
   }
 };
 
-const updateRecipeController = async (req, res) => {
+const updateRecipeController = async (req: Request, res: Response) => {
   const { id } = req.params; // Recipe ID from URL params
   const { title, time, image, recipe } = req.body; // Recipe data from the request body
   console.log("hiii", id, title, time, image, recipe);
@@ -354,31 +394,28 @@ const updateRecipeController = async (req, res) => {
   }
 };
 
-const likeRecipe = async (req, res) => {
-  // Destructure recipeId and userId from req.body
+const likeRecipe = async (req: Request, res: Response) => {
   const { recipeId, userId } = req.body;
 
   console.log("Recipe ID:", recipeId, "User ID:", userId);
 
   try {
-    // Find the recipe by its ID
     const recipe = await RecipeModel.findById(recipeId);
-    console.log(recipe); // Logging the recipe to check its details
+    console.log(recipe);
 
     if (!recipe) {
-      // If no recipe is found, return a 404 error
       return res.status(404).json({ message: "Recipe not found" });
     }
 
     // Check if the user has already liked the recipe
     if (recipe.likedBy.includes(userId)) {
-      // If the user has already liked the recipe, remove them from likedBy
-      recipe.likedBy.pull(userId); // Remove the user from likedBy
+      // If the user has already liked the recipe, remove them from likedBy using filter
+      recipe.likedBy = recipe.likedBy.filter((id) => id !== userId);
       console.log("User unliked the recipe:", recipeId);
     } else {
-      // If the user has disliked the recipe, remove them from dislikedBy
+      // If the user has disliked the recipe, remove them from dislikedBy using filter
       if (recipe.dislikedBy.includes(userId)) {
-        recipe.dislikedBy.pull(userId); // Remove the user from dislikedBy
+        recipe.dislikedBy = recipe.dislikedBy.filter((id) => id !== userId);
       }
 
       // Add the user to likedBy
@@ -389,44 +426,42 @@ const likeRecipe = async (req, res) => {
     // Save the updated recipe
     await recipe.save();
 
-    // Return a success message
     return res
       .status(200)
       .json({ message: "Recipe liked/unliked successfully", data: recipe });
   } catch (error) {
-    // Log the error and return an appropriate message
+    // Type assertion to ensure error is of type Error
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
     console.error(error);
-    return res
-      .status(500)
-      .json({ message: `Error liking/unliking recipe: ${error.message}` });
+    return res.status(500).json({
+      message: `Error disliking/undisliking recipe: ${errorMessage}`,
+    });
   }
 };
 
-const dislikeRecipe = async (req, res) => {
-  // Destructure recipeId and userId from req.body
+const dislikeRecipe = async (req: Request, res: Response) => {
   const { recipeId, userId } = req.body;
 
   console.log("Recipe ID:", recipeId, "User ID:", userId);
 
   try {
-    // Find the recipe by its ID
     const recipe = await RecipeModel.findById(recipeId);
-    console.log(recipe); // Logging the recipe to check its details
+    console.log(recipe);
 
     if (!recipe) {
-      // If no recipe is found, return a 404 error
       return res.status(404).json({ message: "Recipe not found" });
     }
 
     // Check if the user has already disliked the recipe
     if (recipe.dislikedBy.includes(userId)) {
-      // If the user has already disliked the recipe, remove them from dislikedBy
-      recipe.dislikedBy.pull(userId); // Remove the user from dislikedBy
+      // If the user has already disliked the recipe, remove them from dislikedBy using filter
+      recipe.dislikedBy = recipe.dislikedBy.filter((id) => id !== userId);
       console.log("User removed dislike from the recipe:", recipeId);
     } else {
-      // If the user has liked the recipe, remove them from likedBy
+      // If the user has liked the recipe, remove them from likedBy using filter
       if (recipe.likedBy.includes(userId)) {
-        recipe.likedBy.pull(userId); // Remove the user from likedBy
+        recipe.likedBy = recipe.likedBy.filter((id) => id !== userId);
       }
 
       // Add the user to dislikedBy
@@ -437,45 +472,44 @@ const dislikeRecipe = async (req, res) => {
     // Save the updated recipe
     await recipe.save();
 
-    // Return a success message
-    return res
-      .status(200)
-      .json({
-        message: "Recipe disliked/undisliked successfully",
-        data: recipe,
-      });
+    return res.status(200).json({
+      message: "Recipe disliked/undisliked successfully",
+      data: recipe,
+    });
   } catch (error) {
-    // Log the error and return an appropriate message
+    // Type assertion to ensure error is of type Error
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
     console.error(error);
-    return res
-      .status(500)
-      .json({
-        message: `Error disliking/undisliking recipe: ${error.message}`,
-      });
+    return res.status(500).json({
+      message: `Error disliking/undisliking recipe: ${errorMessage}`,
+    });
   }
 };
 
 // Delete a comment
 const deleteComment = async (req: Request, res: Response) => {
   const commentId = req.params.id;
-// Assuming you have the userId available in req.user (from JWT token)
+  // Assuming you have the userId available in req.user (from JWT token)
 
   try {
-    // Find the recipe containing the comment
-    const recipe = await RecipeModel.findOne();
+    // Find the recipe containing the comment by its ID
+    const recipeId = req.body.recipeId; // You need to pass the recipe ID in the request body
+    const recipe = await RecipeModel.findById(recipeId);
 
     if (!recipe) {
-      return res
-        .status(404)
-        .json({ message: "Comment not found or not authorized" });
+      return res.status(404).json({ message: "Recipe not found" });
     }
 
+    // Ensure comments is initialized to an empty array if undefined
+    recipe.comments = recipe.comments || [];
+
     // Remove the comment from the recipe
-    recipe.comments = recipe.comments.filter((comment) => {
-      console.log("Comment ID from DB:", comment._id.toString());
-      console.log("Comment ID from request:", commentId);
-      return comment._id.toString() !== commentId;
+    recipe.comments = recipe.comments.filter((comment: any) => {
+      return comment._id?.toString() !== commentId; // Ensure we are comparing as strings
     });
+
+    // Save the updated recipe
     await recipe.save();
 
     return res.status(200).json({ message: "Comment deleted successfully" });
