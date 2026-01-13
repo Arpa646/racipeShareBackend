@@ -42,7 +42,6 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         useremail: user._id,
         role: user.role,
     };
-    console.log('for create token', jwtPayload);
     const accessToken = jsonwebtoken_1.default.sign(jwtPayload, "jjjnn", {
         expiresIn: "10d",
     });

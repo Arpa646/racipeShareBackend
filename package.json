@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "seed:books": "ts-node src/scripts/seedBooks.ts",
+    "seed:genres": "ts-node src/scripts/seedGenres.ts",
+    "seed:users": "ts-node src/scripts/seedDefaultUsers.ts"
   },
   "keywords": [],
   "author": "",

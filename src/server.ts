@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import app from './app';
+import { dropUniqueReviewIndex } from './app/modules/Reviews/review.model';
 
 const port = process.env.PORT || 5000;
 async function main() {
@@ -11,6 +12,8 @@ async function main() {
   
     });
 
+    // Drop the unique index on reviews to allow multiple reviews per user per book
+    await dropUniqueReviewIndex();
   
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);

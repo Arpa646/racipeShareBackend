@@ -43,7 +43,7 @@ const loginUser = async (payload: TLoginUser) => {
     useremail: user._id,
     role: user.role,
   };
-  console.log('for create token',jwtPayload);
+ 
 
   const accessToken = jwt.sign(jwtPayload, "jjjnn" as string, {
     expiresIn: "10d",

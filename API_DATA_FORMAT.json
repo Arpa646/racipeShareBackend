@@ -1,0 +1,415 @@
+{
+  "baseUrl": "http://localhost:5000/api",
+  "authentication": {
+    "type": "Bearer Token",
+    "header": "Authorization: Bearer YOUR_TOKEN",
+    "note": "Get token from login endpoint. Admin routes require admin role."
+  },
+  "endpoints": {
+    "auth": {
+      "login": {
+        "method": "POST",
+        "url": "/auth/login",
+        "request": {
+          "email": "user@example.com",
+          "password": "password123"
+        },
+        "response": {
+          "success": true,
+          "message": "User logged in successfully",
+          "data": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            "user": {
+              "_id": "user_id_here",
+              "name": "John Doe",
+              "email": "user@example.com",
+              "role": "user"
+            }
+          }
+        }
+      },
+      "signup": {
+        "method": "POST",
+        "url": "/auth/signup",
+        "request": {
+          "user": {
+            "name": "John Doe",
+            "email": "user@example.com",
+            "password": "password123",
+            "phone": "+1234567890",
+            "role": "user",
+            "address": "123 Main St"
+          }
+        },
+        "response": {
+          "success": true,
+          "message": "User registered successfully",
+          "data": {
+            "_id": "user_id_here",
+            "name": "John Doe",
+            "email": "user@example.com"
+          }
+        }
+      }
+    },
+    "books": {
+      "getAll": {
+        "method": "GET",
+        "url": "/books",
+        "auth": false,
+        "response": {
+          "success": true,
+          "message": "Books retrieved successfully",
+          "data": [
+            {
+              "_id": "book_id_1",
+              "title": "The Great Gatsby",
+              "author": "F. Scott Fitzgerald",
+              "description": "A classic American novel",
+              "isbn": "978-0-7432-7356-5",
+              "coverImage": "https://example.com/cover.jpg",
+              "publishedDate": "1925-04-10T00:00:00.000Z",
+              "genre": "Fiction",
+              "pages": 180,
+              "user": {
+                "_id": "user_id",
+                "name": "John Doe"
+              },
+              "isDeleted": false,
+              "isPublished": true,
+              "createdAt": "2024-01-01T00:00:00.000Z",
+              "updatedAt": "2024-01-01T00:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "getSingle": {
+        "method": "GET",
+        "url": "/books/:id",
+        "auth": false,
+        "response": {
+          "success": true,
+          "message": "Book retrieved successfully",
+          "data": {
+            "_id": "book_id_1",
+            "title": "The Great Gatsby",
+            "author": "F. Scott Fitzgerald",
+            "description": "A classic American novel",
+            "genre": "Fiction",
+            "pages": 180,
+            "user": {
+              "_id": "user_id",
+              "name": "John Doe"
+            }
+          }
+        }
+      },
+      "create": {
+        "method": "POST",
+        "url": "/books",
+        "auth": false,
+        "request": {
+          "title": "The Great Gatsby",
+          "author": "F. Scott Fitzgerald",
+          "description": "A classic American novel",
+          "isbn": "978-0-7432-7356-5",
+          "coverImage": "https://example.com/cover.jpg",
+          "publishedDate": "1925-04-10",
+          "genre": "Fiction",
+          "pages": 180,
+          "user": "user_id_here"
+        },
+        "response": {
+          "success": true,
+          "message": "Book created successfully",
+          "data": {
+            "_id": "book_id_1",
+            "title": "The Great Gatsby",
+            "author": "F. Scott Fitzgerald"
+          }
+        }
+      },
+      "update": {
+        "method": "PUT",
+        "url": "/books/:id",
+        "auth": false,
+        "request": {
+          "title": "The Great Gatsby (Updated)",
+          "author": "F. Scott Fitzgerald",
+          "description": "Updated description"
+        },
+        "response": {
+          "success": true,
+          "message": "Book updated successfully",
+          "data": {
+            "_id": "book_id_1",
+            "title": "The Great Gatsby (Updated)"
+          }
+        }
+      },
+      "delete": {
+        "method": "DELETE",
+        "url": "/books/:id",
+        "auth": false,
+        "response": {
+          "success": true,
+          "message": "Book deleted successfully",
+          "data": {
+            "_id": "book_id_1",
+            "isDeleted": true
+          }
+        }
+      }
+    },
+    "genres": {
+      "getAll": {
+        "method": "GET",
+        "url": "/genres",
+        "auth": false,
+        "response": {
+          "success": true,
+          "message": "Genres retrieved successfully",
+          "data": [
+            {
+              "_id": "genre_id_1",
+              "name": "Fiction",
+              "description": "Literary works of imagination",
+              "isDeleted": false,
+              "createdAt": "2024-01-01T00:00:00.000Z",
+              "updatedAt": "2024-01-01T00:00:00.000Z"
+            }
+          ]
+        }
+      },
+      "getSingle": {
+        "method": "GET",
+        "url": "/genres/:id",
+        "auth": false,
+        "response": {
+          "success": true,
+          "message": "Genre retrieved successfully",
+          "data": {
+            "_id": "genre_id_1",
+            "name": "Fiction",
+            "description": "Literary works of imagination"
+          }
+        }
+      },
+      "create": {
+        "method": "POST",
+        "url": "/genres",
+        "auth": true,
+        "role": "admin",
+        "request": {
+          "name": "Fiction",
+          "description": "Literary works of imagination"
+        },
+        "response": {
+          "success": true,
+          "message": "Genre created successfully",
+          "data": {
+            "_id": "genre_id_1",
+            "name": "Fiction",
+            "description": "Literary works of imagination"
+          }
+        }
+      },
+      "update": {
+        "method": "PUT",
+        "url": "/genres/:id",
+        "auth": true,
+        "role": "admin",
+        "request": {
+          "name": "Fiction (Updated)",
+          "description": "Updated description"
+        },
+        "response": {
+          "success": true,
+          "message": "Genre updated successfully",
+          "data": {
+            "_id": "genre_id_1",
+            "name": "Fiction (Updated)"
+          }
+        }
+      },
+      "delete": {
+        "method": "DELETE",
+        "url": "/genres/:id",
+        "auth": true,
+        "role": "admin",
+        "response": {
+          "success": true,
+          "message": "Genre deleted successfully",
+          "data": {
+            "_id": "genre_id_1",
+            "isDeleted": true
+          }
+        }
+      }
+    },
+    "recipes": {
+      "getAll": {
+        "method": "GET",
+        "url": "/recipies",
+        "auth": false,
+        "response": {
+          "success": true,
+          "message": "Facility retrieved successfully",
+          "data": [
+            {
+              "_id": "recipe_id_1",
+              "title": "Chocolate Cake",
+              "time": "45 minutes",
+              "image": "https://example.com/cake.jpg",
+              "recipe": "Mix flour, sugar, eggs...",
+              "user": {
+                "_id": "user_id",
+                "name": "John Doe"
+              },
+              "rating": 4.5,
+              "isDeleted": false,
+              "isPublished": true
+            }
+          ]
+        }
+      },
+      "create": {
+        "method": "POST",
+        "url": "/recipies",
+        "auth": false,
+        "request": {
+          "title": "Chocolate Cake",
+          "time": "45 minutes",
+          "image": "https://example.com/cake.jpg",
+          "recipe": "Mix flour, sugar, eggs, and chocolate...",
+          "user": "user_id_here",
+          "rating": 4.5
+        },
+        "response": {
+          "statusCode": 200,
+          "success": true,
+          "message": "Recipe created successfully",
+          "data": {
+            "_id": "recipe_id_1",
+            "title": "Chocolate Cake"
+          }
+        }
+      }
+    },
+    "users": {
+      "getAll": {
+        "method": "GET",
+        "url": "/auth",
+        "auth": false,
+        "response": {
+          "success": true,
+          "message": "Users retrieved successfully",
+          "data": [
+            {
+              "_id": "user_id_1",
+              "name": "John Doe",
+              "email": "john@example.com",
+              "phone": "+1234567890",
+              "role": "user",
+              "address": "123 Main St",
+              "isPremium": false,
+              "isDeleted": false,
+              "isBlock": false
+            }
+          ]
+        }
+      },
+      "getSingle": {
+        "method": "GET",
+        "url": "/auth/:id",
+        "auth": false,
+        "response": {
+          "success": true,
+          "message": "Facility retrieved successfully",
+          "data": {
+            "_id": "user_id_1",
+            "name": "John Doe",
+            "email": "john@example.com",
+            "role": "user"
+          }
+        }
+      },
+      "updateProfile": {
+        "method": "PUT",
+        "url": "/auth/updateprofile/:id",
+        "auth": false,
+        "request": {
+          "name": "John Updated",
+          "email": "johnupdated@example.com",
+          "phone": "+1234567890",
+          "address": "456 New St"
+        },
+        "response": {
+          "success": true,
+          "message": "User profile updated successfully",
+          "data": {
+            "_id": "user_id_1",
+            "name": "John Updated",
+            "email": "johnupdated@example.com"
+          }
+        }
+      }
+    }
+  },
+  "errorResponses": {
+    "400": {
+      "success": false,
+      "message": "Bad Request",
+      "error": "Validation error details"
+    },
+    "401": {
+      "success": false,
+      "statusCode": 401,
+      "message": "You are not authorized!"
+    },
+    "403": {
+      "success": false,
+      "statusCode": 403,
+      "message": "You have no access to this route"
+    },
+    "404": {
+      "success": false,
+      "message": "Resource not found",
+      "data": null
+    },
+    "500": {
+      "success": false,
+      "message": "Internal server error",
+      "error": "Error message details"
+    }
+  },
+  "commonPatterns": {
+    "successResponse": {
+      "success": true,
+      "message": "Operation successful",
+      "data": {}
+    },
+    "errorResponse": {
+      "success": false,
+      "message": "Error message",
+      "error": "Error details (optional)"
+    },
+    "pagination": {
+      "note": "Currently not implemented, but can be added",
+      "example": {
+        "page": 1,
+        "limit": 10,
+        "total": 100,
+        "data": []
+      }
+    }
+  },
+  "notes": {
+    "authentication": "Include 'Authorization: Bearer TOKEN' header for protected routes",
+    "adminRoutes": "Genres create/update/delete require admin role",
+    "softDelete": "Delete operations set isDeleted=true, don't remove from database",
+    "timestamps": "All models include createdAt and updatedAt automatically",
+    "populatedFields": "User references are populated with full user object",
+    "dateFormat": "Dates are in ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ)"
+  }
+}

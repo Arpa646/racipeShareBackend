@@ -5,6 +5,7 @@ export interface IUser {
   phone: string;
   role: 'admin' | 'user';
   address: string;
+  image?: string; // User profile image URL
   isPremium: boolean;
   isDeleted: boolean;
   isBlock: boolean;

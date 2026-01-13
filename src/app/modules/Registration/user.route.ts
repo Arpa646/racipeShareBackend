@@ -24,4 +24,5 @@ router.put("/updateprofile/:id", userControllers.updateProfile);
 router.get("/:id", userControllers.getSingleUser);
 router.delete("/:id", userControllers.deleteUser);
 router.put("/change-block/:id",userControllers.updateUserStates);
+router.put("/change-role/:id", auth(USER_ROLE.admin), userControllers.changeUserRole);
 export const UserRoutes = router;

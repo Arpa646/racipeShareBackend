@@ -246,15 +246,16 @@ const unfollowUser = async (
 const updateProfile = async (req: Request, res: Response) => {
   try {
     const userId = req.params.id; // Assuming you get the user ID from a JWT middleware
-    const { name, email, phone, address } = req.body;
+    const { name, email, phone, address, image } = req.body;
     console.log(userId);
-    console.log("data", name, email, phone, address);
+    console.log("data", name, email, phone, address, image);
     // Call the service to update the user
     const updatedUser = await UserServices.updateUserProfile(userId, {
       name,
       email,
       phone,
       address,
+      image,
     });
 
     return res.status(200).json({
@@ -272,6 +273,40 @@ const updateProfile = async (req: Request, res: Response) => {
   }
 };
 
+const changeUserRole = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const { role } = req.body;
+
+    // Validate role
+    if (!role || (role !== 'admin' && role !== 'user')) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "Invalid role. Role must be 'admin' or 'user'",
+      });
+    }
+
+    // Check if user exists
+    const user = await UserServices.getUserByIdFromDB(id);
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Update user role
+    const updatedUser = await UserServices.updateUserRoleInDB(id, role);
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: `User role updated to ${role} successfully`,
+      data: updatedUser,
+    });
+  }
+);
+
 export const userControllers = {
   createUser,
   getAllUser,
@@ -281,6 +316,7 @@ export const userControllers = {
   followUser,
   unfollowUser,
   updateProfile,
+  changeUserRole,
 };
 
 // import { UserServices } from "./user.service";

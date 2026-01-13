@@ -31,6 +31,7 @@ const userSchema = new Schema<IUser>(
       default: "user",
     },
     address: { type: String, required: true },
+    image: { type: String }, // User profile image URL (optional)
   },
   {
     timestamps: true,

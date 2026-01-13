@@ -14,12 +14,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = __importDefault(require("./app"));
+const review_model_1 = require("./app/modules/Reviews/review.model");
 const port = process.env.PORT || 5000;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         //sportFacility //eE8vmF9Tq8ebFt5s
         try {
             yield mongoose_1.default.connect("mongodb+srv://sportFacility:eE8vmF9Tq8ebFt5s@cluster0.eep6yze.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {});
+            // Drop the unique index on reviews to allow multiple reviews per user per book
+            yield (0, review_model_1.dropUniqueReviewIndex)();
             app_1.default.listen(port, () => {
                 console.log(`Server is running on port ${port}`);
             });

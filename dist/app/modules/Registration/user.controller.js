@@ -211,15 +211,16 @@ const unfollowUser = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
 const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.params.id; // Assuming you get the user ID from a JWT middleware
-        const { name, email, phone, address } = req.body;
+        const { name, email, phone, address, image } = req.body;
         console.log(userId);
-        console.log("data", name, email, phone, address);
+        console.log("data", name, email, phone, address, image);
         // Call the service to update the user
         const updatedUser = yield user_service_1.UserServices.updateUserProfile(userId, {
             name,
             email,
             phone,
             address,
+            image,
         });
         return res.status(200).json({
             success: true,
@@ -236,6 +237,33 @@ const updateProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
 });
+const changeUserRole = (0, asynch_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const { role } = req.body;
+    // Validate role
+    if (!role || (role !== 'admin' && role !== 'user')) {
+        return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: "Invalid role. Role must be 'admin' or 'user'",
+        });
+    }
+    // Check if user exists
+    const user = yield user_service_1.UserServices.getUserByIdFromDB(id);
+    if (!user) {
+        return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
+            success: false,
+            message: "User not found",
+        });
+    }
+    // Update user role
+    const updatedUser = yield user_service_1.UserServices.updateUserRoleInDB(id, role);
+    (0, response_1.default)(res, {
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        success: true,
+        message: `User role updated to ${role} successfully`,
+        data: updatedUser,
+    });
+}));
 exports.userControllers = {
     createUser,
     getAllUser,
@@ -245,6 +273,7 @@ exports.userControllers = {
     followUser,
     unfollowUser,
     updateProfile,
+    changeUserRole,
 };
 // import { UserServices } from "./user.service";
 // import catchAsync from "../../middleware/asynch";

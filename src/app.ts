@@ -21,7 +21,7 @@ app.use(cors({
 
 app.get('/', (req, res) => {
   res.status(200).json({
-    message: 'Welcome to the Apollo Gears API Service',
+    message: 'Welcome to the Apollo Gears API Service newwwwwwwwwwww',
   });
 });
 

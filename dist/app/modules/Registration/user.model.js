@@ -28,6 +28,7 @@ const userSchema = new mongoose_1.Schema({
         default: "user",
     },
     address: { type: String, required: true },
+    image: { type: String }, // User profile image URL (optional)
 }, {
     timestamps: true,
 });

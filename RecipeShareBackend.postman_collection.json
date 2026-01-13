@@ -1,0 +1,1744 @@
+{
+	"info": {
+		"_postman_id": "recipe-share-backend-api",
+		"name": "Recipe Share Backend API",
+		"description": "Complete API collection for Recipe Share Backend application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "User login endpoint"
+					}
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forgot-password",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "forgot-password"]
+						},
+						"description": "Request password reset"
+					}
+				},
+				{
+					"name": "Reset Password (GET)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/reset-password/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "reset-password", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_id_here"
+								}
+							]
+						},
+						"description": "Get reset password page"
+					}
+				},
+				{
+					"name": "Reset Password (POST)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"password\": \"newPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/reset-password/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "reset-password", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_id_here"
+								}
+							]
+						},
+						"description": "Reset password with new password"
+					}
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"oldPassword\": \"oldPassword123\",\n  \"newPassword\": \"newPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/change-password/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "change-password", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_id_here"
+								}
+							]
+						},
+						"description": "Change user password"
+					}
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user\": {\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"phone\": \"+1234567890\",\n    \"role\": \"user\",\n    \"address\": \"123 Main St\",\n    \"image\": \"https://example.com/profile-image.jpg\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/signup",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "signup"]
+						},
+						"description": "Register a new user"
+					}
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth"]
+						},
+						"description": "Get all users"
+					}
+				},
+				{
+					"name": "Get Single User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_id_here"
+								}
+							]
+						},
+						"description": "Get a single user by ID"
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Updated\",\n  \"email\": \"johnupdated@example.com\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"456 New St\",\n  \"image\": \"https://example.com/updated-profile-image.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/updateprofile/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "updateprofile", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_id_here"
+								}
+							]
+						},
+						"description": "Update user profile"
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_id_here"
+								}
+							]
+						},
+						"description": "Delete a user (soft delete)"
+					}
+				},
+				{
+					"name": "Change Block Status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/change-block/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "change-block", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_id_here"
+								}
+							]
+						},
+						"description": "Toggle user block status"
+					}
+				},
+				{
+					"name": "Change User Role (Admin Only)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"description": "Admin JWT token required"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"role\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/change-role/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "change-role", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_id_here"
+								}
+							]
+						},
+						"description": "Change user role to 'admin' or 'user'. Admin only endpoint. Role must be either 'admin' or 'user'."
+					},
+					"response": [
+						{
+							"name": "Success - Role Changed",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{adminToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"role\": \"admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/change-role/:id",
+									"host": ["{{baseUrl}}"],
+									"path": ["auth", "change-role", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "user_id_here"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"User role updated to admin successfully\",\n  \"data\": {\n    \"_id\": \"user_id_here\",\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"role\": \"admin\",\n    \"isBlock\": false,\n    \"isPremium\": false,\n    \"isDeleted\": false\n  }\n}"
+						},
+						{
+							"name": "Invalid Role",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{adminToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"role\": \"invalid_role\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/change-role/:id",
+									"host": ["{{baseUrl}}"],
+									"path": ["auth", "change-role", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "user_id_here"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": false,\n  \"statusCode\": 400,\n  \"message\": \"Invalid role. Role must be 'admin' or 'user'\"\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"role\": \"admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/change-role/:id",
+									"host": ["{{baseUrl}}"],
+									"path": ["auth", "change-role", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "user_id_here"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": false,\n  \"statusCode\": 401,\n  \"message\": \"You are not authorized!\"\n}"
+						},
+						{
+							"name": "User Not Found",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{adminToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"role\": \"admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/change-role/:id",
+									"host": ["{{baseUrl}}"],
+									"path": ["auth", "change-role", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "invalid_user_id"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": false,\n  \"statusCode\": 404,\n  \"message\": \"User not found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Follow User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentUserId\": \"user_id_1\",\n  \"targetUserId\": \"user_id_2\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/follow",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "follow"]
+						},
+						"description": "Follow a user"
+					}
+				},
+				{
+					"name": "Unfollow User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentUserId\": \"user_id_1\",\n  \"targetUserId\": \"user_id_2\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/unfollow",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "unfollow"]
+						},
+						"description": "Unfollow a user"
+					}
+				}
+			]
+		},
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "Create Book",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{userToken}}",
+								"description": "User JWT token required. Get this by logging in as a user."
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"The Great Gatsby\",\n  \"author\": \"F. Scott Fitzgerald\",\n  \"description\": \"A classic American novel set in the Jazz Age, following the mysterious millionaire Jay Gatsby and his obsession with Daisy Buchanan.\",\n  \"isbn\": \"978-0-7432-7356-5\",\n  \"coverImage\": \"https://images-na.ssl-images-amazon.com/images/I/81QuEGw8VPL.jpg\",\n  \"publishedDate\": \"1925-04-10\",\n  \"genre\": \"genre_id_here\",\n  \"pages\": 180\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/books",
+							"host": ["{{baseUrl}}"],
+							"path": ["books"]
+						},
+						"description": "Add/Create a new book. User ID is automatically extracted from the authentication token - no need to include 'user' field in the request body."
+					}
+				},
+				{
+					"name": "Get All Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/books",
+							"host": ["{{baseUrl}}"],
+							"path": ["books"]
+						},
+						"description": "Get all books"
+					}
+				},
+				{
+					"name": "Search Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/books/search?title=&author=&genres=&minRating=&maxRating=&sortBy=rating",
+							"host": ["{{baseUrl}}"],
+							"path": ["books", "search"],
+							"query": [
+								{
+									"key": "title",
+									"value": "",
+									"description": "Search by book title (case-insensitive partial match)",
+									"disabled": true
+								},
+								{
+									"key": "author",
+									"value": "",
+									"description": "Search by author name (case-insensitive partial match)",
+									"disabled": true
+								},
+								{
+									"key": "genres",
+									"value": "",
+									"description": "Filter by genre ID(s). Can be comma-separated for multiple genres: genre1,genre2,genre3",
+									"disabled": true
+								},
+								{
+									"key": "minRating",
+									"value": "",
+									"description": "Minimum average rating (0-5)",
+									"disabled": true
+								},
+								{
+									"key": "maxRating",
+									"value": "",
+									"description": "Maximum average rating (0-5)",
+									"disabled": true
+								},
+								{
+									"key": "sortBy",
+									"value": "rating",
+									"description": "Sort by: rating, title, createdAt, updatedAt (default: createdAt)"
+								}
+							]
+						},
+						"description": "Search books with filters.\n\n**Search Parameters (all optional):**\n- title: Search by book title (case-insensitive)\n- author: Search by author name (case-insensitive)\n- genres: Filter by genre ID(s). Supports multiple genres as comma-separated: genre1,genre2,genre3\n- minRating: Minimum average rating (0-5)\n- maxRating: Maximum average rating (0-5)\n- sortBy: Sort results (rating, title, createdAt, updatedAt)\n\n**Examples:**\n- GET /books/search?title=Gatsby - Search by title\n- GET /books/search?genres=69650eb4defb2427a7cfd5da&minRating=4&sortBy=rating - Filter by single genre\n- GET /books/search?genres=69650eb4defb2427a7cfd5da,69650eb4defb2427a7cfd5db,69650eb4defb2427a7cfd5dc - Filter by multiple genres"
+					}
+				},
+				{
+					"name": "Get Single Book",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/books/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["books", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "book_id_here"
+								}
+							]
+						},
+						"description": "Get a single book by ID"
+					}
+				},
+				{
+					"name": "Update Book",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"The Great Gatsby (Updated)\",\n  \"author\": \"F. Scott Fitzgerald\",\n  \"description\": \"An updated description\",\n  \"genre\": \"Classic Fiction\",\n  \"pages\": 200\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/books/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["books", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "book_id_here"
+								}
+							]
+						},
+						"description": "Update a book"
+					}
+				},
+				{
+					"name": "Delete Book",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/books/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["books", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "book_id_here"
+								}
+							]
+						},
+						"description": "Delete a book (soft delete)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Genres",
+			"item": [
+				{
+					"name": "Create Genre (Admin Only)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"description": "Admin JWT token required"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Fiction\",\n  \"description\": \"Literary works of imagination, including novels, short stories, and novellas that are not based on real events.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/genres",
+							"host": ["{{baseUrl}}"],
+							"path": ["genres"]
+						},
+						"description": "Create a new genre (Admin only)"
+					}
+				},
+				{
+					"name": "Get All Genres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/genres",
+							"host": ["{{baseUrl}}"],
+							"path": ["genres"]
+						},
+						"description": "Get all genres (Public)"
+					}
+				},
+				{
+					"name": "Get Single Genre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/genres/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["genres", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "genre_id_here"
+								}
+							]
+						},
+						"description": "Get a single genre by ID (Public)"
+					}
+				},
+				{
+					"name": "Update Genre (Admin Only)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"description": "Admin JWT token required"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Fiction (Updated)\",\n  \"description\": \"Updated description for fiction genre.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/genres/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["genres", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "genre_id_here"
+								}
+							]
+						},
+						"description": "Update a genre (Admin only)"
+					}
+				},
+				{
+					"name": "Delete Genre (Admin Only)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"description": "Admin JWT token required"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/genres/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["genres", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "genre_id_here"
+								}
+							]
+						},
+						"description": "Delete a genre (Admin only - soft delete)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Recipes",
+			"item": [
+				{
+					"name": "Create Recipe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Chocolate Cake\",\n  \"time\": \"45 minutes\",\n  \"image\": \"https://example.com/cake.jpg\",\n  \"recipe\": \"Mix flour, sugar, eggs, and chocolate...\",\n  \"user\": \"user_id_here\",\n  \"rating\": 4.5\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipies",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies"]
+						},
+						"description": "Create a new recipe"
+					}
+				},
+				{
+					"name": "Get All Recipes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipies",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies"]
+						},
+						"description": "Get all recipes"
+					}
+				},
+				{
+					"name": "Get Single Recipe",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipies/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "recipe_id_here"
+								}
+							]
+						},
+						"description": "Get a single recipe by ID"
+					}
+				},
+				{
+					"name": "Get Recipes by User Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipies/userrecipe/:email",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies", "userrecipe", ":email"],
+							"variable": [
+								{
+									"key": "email",
+									"value": "user@example.com"
+								}
+							]
+						},
+						"description": "Get all recipes by user email"
+					}
+				},
+				{
+					"name": "Update Recipe",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Chocolate Cake (Updated)\",\n  \"time\": \"50 minutes\",\n  \"image\": \"https://example.com/cake-updated.jpg\",\n  \"recipe\": \"Updated recipe instructions...\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipies/update/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies", "update", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "recipe_id_here"
+								}
+							]
+						},
+						"description": "Update a recipe"
+					}
+				},
+				{
+					"name": "Toggle Recipe Published Status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipies/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "recipe_id_here"
+								}
+							]
+						},
+						"description": "Toggle recipe published status"
+					}
+				},
+				{
+					"name": "Delete Recipe",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/recipies/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "recipe_id_here"
+								}
+							]
+						},
+						"description": "Delete a recipe (soft delete)"
+					}
+				},
+				{
+					"name": "Add Comment to Recipe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipeId\": \"recipe_id_here\",\n  \"userId\": \"user_id_here\",\n  \"comment\": \"This recipe looks amazing!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipies/comment",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies", "comment"]
+						},
+						"description": "Add a comment to a recipe"
+					}
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipeId\": \"recipe_id_here\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipies/deletecomment/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies", "deletecomment", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "comment_id_here"
+								}
+							]
+						},
+						"description": "Delete a comment from a recipe"
+					}
+				},
+				{
+					"name": "Rate Recipe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipeId\": \"recipe_id_here\",\n  \"userId\": \"user_id_here\",\n  \"rating\": 5\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipies/rating",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies", "rating"]
+						},
+						"description": "Rate a recipe (1-5 stars)"
+					}
+				},
+				{
+					"name": "Like Recipe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipeId\": \"recipe_id_here\",\n  \"userId\": \"user_id_here\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipies/like",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies", "like"]
+						},
+						"description": "Like a recipe"
+					}
+				},
+				{
+					"name": "Dislike Recipe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipeId\": \"recipe_id_here\",\n  \"userId\": \"user_id_here\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/recipies/dislike",
+							"host": ["{{baseUrl}}"],
+							"path": ["recipies", "dislike"]
+						},
+						"description": "Dislike a recipe"
+					}
+				}
+			]
+		},
+		{
+			"name": "Premium",
+			"item": [
+				{
+					"name": "Make Premium User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user_id_here\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/premium",
+							"host": ["{{baseUrl}}"],
+							"path": ["premium"]
+						},
+						"description": "Initiate premium payment"
+					}
+				},
+				{
+					"name": "Payment Success",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/premium/success?transactionid=:transactionId",
+							"host": ["{{baseUrl}}"],
+							"path": ["premium", "success"],
+							"query": [
+								{
+									"key": "transactionid",
+									"value": "transaction_id_here"
+								}
+							]
+						},
+						"description": "Payment success callback"
+					}
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Create Review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user_id_here\",\n  \"bookId\": \"book_id_here\",\n  \"rating\": 5,\n  \"comment\": \"Great book! Highly recommended.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/reviews",
+							"host": ["{{baseUrl}}"],
+							"path": ["reviews"]
+						},
+						"description": "Create a new review (rating 1-5)"
+					}
+				},
+				{
+					"name": "Get All Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews",
+							"host": ["{{baseUrl}}"],
+							"path": ["reviews"]
+						},
+						"description": "Get all reviews (supports optional status query parameter: ?status=pending or ?status=approved)"
+					}
+				},
+				{
+					"name": "Get Pending Reviews (Admin Only)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"description": "Admin JWT token required"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/reviews?status=pending",
+							"host": ["{{baseUrl}}"],
+							"path": ["reviews"],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending",
+									"description": "Filter reviews by status"
+								}
+							]
+						},
+						"description": "Get all pending reviews awaiting approval (Admin only)"
+					}
+				},
+				{
+					"name": "Get Reviews by Book",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/book/:bookId",
+							"host": ["{{baseUrl}}"],
+							"path": ["reviews", "book", ":bookId"],
+							"variable": [
+								{
+									"key": "bookId",
+									"value": "book_id_here"
+								}
+							]
+						},
+						"description": "Get all approved reviews for a specific book"
+					}
+				},
+				{
+					"name": "Get Reviews by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/user/:userId",
+							"host": ["{{baseUrl}}"],
+							"path": ["reviews", "user", ":userId"],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "user_id_here"
+								}
+							]
+						},
+						"description": "Get all reviews by a specific user"
+					}
+				},
+				{
+					"name": "Get Single Review",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["reviews", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "review_id_here"
+								}
+							]
+						},
+						"description": "Get a single review by ID"
+					}
+				},
+				{
+					"name": "Update Review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"rating\": 4,\n  \"comment\": \"Updated comment\",\n  \"status\": \"approved\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["reviews", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "review_id_here"
+								}
+							]
+						},
+						"description": "Update a review (can update rating, comment, or status)"
+					}
+				},
+				{
+					"name": "Approve Review (Admin Only)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"description": "Admin JWT token required"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/:id/approve",
+							"host": ["{{baseUrl}}"],
+							"path": ["reviews", ":id", "approve"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "review_id_here"
+								}
+							]
+						},
+						"description": "Approve a pending review (Admin only). Changes review status from 'pending' to 'approved'."
+					}
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["reviews", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "review_id_here"
+								}
+							]
+						},
+						"description": "Delete a review (soft delete)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Shelf",
+			"item": [
+				{
+					"name": "Add Book to Shelf",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user_id_here\",\n  \"bookId\": \"book_id_here\",\n  \"status\": \"reading\",\n  \"progress\": 50\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shelf",
+							"host": ["{{baseUrl}}"],
+							"path": ["shelf"]
+						},
+						"description": "Add book to shelf or update if exists (status: want, reading, read)"
+					}
+				},
+				{
+					"name": "Get All Shelf Entries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shelf",
+							"host": ["{{baseUrl}}"],
+							"path": ["shelf"]
+						},
+						"description": "Get all shelf entries"
+					}
+				},
+				{
+					"name": "Get User Shelf",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{userToken}}",
+								"description": "User JWT token required. Get this by logging in as a user."
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/shelf/user",
+							"host": ["{{baseUrl}}"],
+							"path": ["shelf", "user"]
+						},
+						"description": "Get all books in the authenticated user's shelf. User ID is automatically extracted from the authentication token - no need to include userId in the URL."
+					}
+				},
+				{
+					"name": "Get Shelf Entries by Book",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shelf/book/:bookId",
+							"host": ["{{baseUrl}}"],
+							"path": ["shelf", "book", ":bookId"],
+							"variable": [
+								{
+									"key": "bookId",
+									"value": "book_id_here"
+								}
+							]
+						},
+						"description": "Get all users who have this book in their shelf"
+					}
+				},
+				{
+					"name": "Get Single Shelf Entry",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shelf/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["shelf", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "shelf_id_here"
+								}
+							]
+						},
+						"description": "Get a single shelf entry by ID"
+					}
+				},
+				{
+					"name": "Update Shelf Entry",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"read\",\n  \"progress\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shelf/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["shelf", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "shelf_id_here"
+								}
+							]
+						},
+						"description": "Update shelf entry (status and/or progress 0-100)"
+					}
+				},
+				{
+					"name": "Remove Book from Shelf",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shelf/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["shelf", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "shelf_id_here"
+								}
+							]
+						},
+						"description": "Remove book from shelf (soft delete)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Tutorials",
+			"item": [
+				{
+					"name": "Create Tutorial",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Top 5 Books Everyone Should Read\",\n  \"youtubeUrl\": \"https://www.youtube.com/embed/abcd1234\",\n  \"category\": \"Recommendation\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tutorials",
+							"host": ["{{baseUrl}}"],
+							"path": ["tutorials"]
+						},
+						"description": "Create a new tutorial with YouTube URL"
+					}
+				},
+				{
+					"name": "Get All Tutorials",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tutorials",
+							"host": ["{{baseUrl}}"],
+							"path": ["tutorials"]
+						},
+						"description": "Get all tutorials"
+					}
+				},
+				{
+					"name": "Get Single Tutorial",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tutorials/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["tutorials", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "tutorial_id_here"
+								}
+							]
+						},
+						"description": "Get a single tutorial by ID"
+					}
+				},
+				{
+					"name": "Update Tutorial",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Tutorial Title\",\n  \"youtubeUrl\": \"https://www.youtube.com/embed/updated\",\n  \"category\": \"Tutorial\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tutorials/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["tutorials", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "tutorial_id_here"
+								}
+							]
+						},
+						"description": "Update a tutorial"
+					}
+				},
+				{
+					"name": "Delete Tutorial",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/tutorials/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["tutorials", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "tutorial_id_here"
+								}
+							]
+						},
+						"description": "Delete a tutorial (soft delete)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Recommendations",
+			"item": [
+				{
+					"name": "Get Personalized Recommendations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{userToken}}",
+								"description": "User JWT token required. Get this by logging in as a user."
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/recommendations",
+							"host": ["{{baseUrl}}"],
+							"path": ["recommendations"]
+						},
+						"description": "Get personalized book recommendations for the authenticated user. Returns 12-18 recommended books based on:\n- Most common genres from 'Read' shelf\n- User's average rating given to books\n- Books with highest community-approved reviews in similar genres\n\nIf user has <3 books in 'Read' shelf, returns popular books (top 10 by rating + random selection).\n\nEach recommendation includes a 'recommendationReason' field explaining why the book was recommended (for 'Why this book?' tooltip)."
+					},
+					"response": [
+						{
+							"name": "Success - Personalized Recommendations",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{userToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/recommendations",
+									"host": ["{{baseUrl}}"],
+									"path": ["recommendations"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Personalized recommendations retrieved successfully\",\n  \"data\": {\n    \"recommendations\": [\n      {\n        \"book\": {\n          \"_id\": \"book_id_here\",\n          \"title\": \"The Great Gatsby\",\n          \"author\": \"F. Scott Fitzgerald\",\n          \"genre\": \"Fiction\",\n          \"coverImage\": \"https://example.com/cover.jpg\",\n          \"description\": \"A classic American novel\"\n        },\n        \"averageRating\": 4.5,\n        \"totalRatings\": 25,\n        \"recommendationReason\": \"Matches your preference for Fiction (4 books read). Highly rated by community (4.5/5.0 from 25 reviews)\",\n        \"matchScore\": 75\n      }\n    ],\n    \"userStats\": {\n      \"readBooksCount\": 5,\n      \"favoriteGenres\": [\"Fiction\", \"Mystery\", \"Thriller\"],\n      \"averageUserRating\": 4.2\n    },\n    \"fallbackUsed\": false\n  }\n}"
+						},
+						{
+							"name": "Success - Fallback Recommendations",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{userToken}}"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/recommendations",
+									"host": ["{{baseUrl}}"],
+									"path": ["recommendations"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"statusCode\": 200,\n  \"message\": \"Popular book recommendations (limited reading history)\",\n  \"data\": {\n    \"recommendations\": [\n      {\n        \"book\": {\n          \"_id\": \"book_id_here\",\n          \"title\": \"Popular Book Title\",\n          \"author\": \"Author Name\",\n          \"genre\": \"Fiction\"\n        },\n        \"averageRating\": 4.8,\n        \"totalRatings\": 50,\n        \"recommendationReason\": \"Highly rated (4.8/5.0 from 50 reviews). Popular choice (added to 25 shelves)\",\n        \"matchScore\": 108\n      }\n    ],\n    \"userStats\": {\n      \"readBooksCount\": 2,\n      \"favoriteGenres\": [],\n      \"averageUserRating\": 0\n    },\n    \"fallbackUsed\": true\n  }\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/recommendations",
+									"host": ["{{baseUrl}}"],
+									"path": ["recommendations"]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": false,\n  \"statusCode\": 401,\n  \"message\": \"You are not authorized!\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000/api",
+			"type": "string"
+		},
+		{
+			"key": "adminToken",
+			"value": "",
+			"type": "string",
+			"description": "JWT token for admin user. Get this by logging in as an admin user."
+		},
+		{
+			"key": "userToken",
+			"value": "",
+			"type": "string",
+			"description": "JWT token for regular user. Get this by logging in as a user. Required for Recommendations endpoint."
+		}
+	]
+}

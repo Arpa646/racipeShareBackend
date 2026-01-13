@@ -21,7 +21,7 @@ app.use((0, cors_1.default)({
 }));
 app.get('/', (req, res) => {
     res.status(200).json({
-        message: 'Welcome to the Apollo Gears API Service',
+        message: 'Welcome to the Apollo Gears API Service newwwwwwwwwwww',
     });
 });
 // Application routes

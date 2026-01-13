@@ -87,6 +87,7 @@ const updateUserProfile = (userId, updateData) => __awaiter(void 0, void 0, void
                 email: updateData.email,
                 phone: updateData.phone,
                 address: updateData.address,
+                image: updateData.image,
             },
         }, { new: true, runValidators: true } // Return the updated document, and run validators
         );
@@ -103,6 +104,27 @@ const updateUserProfile = (userId, updateData) => __awaiter(void 0, void 0, void
         throw new Error("An unknown error occurred"); // Fallback for unknown error type
     }
 });
+const updateUserRoleInDB = (userId, role) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Validate role
+        if (role !== 'admin' && role !== 'user') {
+            throw new Error("Invalid role. Role must be 'admin' or 'user'");
+        }
+        // Find the user by ID and update the role
+        const updatedUser = yield user_model_1.UserRegModel.findByIdAndUpdate(userId, { role }, { new: true, runValidators: true } // Return the updated document, and run validators
+        );
+        if (!updatedUser) {
+            throw new Error("User not found");
+        }
+        return updatedUser;
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            throw new Error(error.message);
+        }
+        throw new Error("An unknown error occurred");
+    }
+});
 exports.UserServices = {
     createUserIntoDB,
     getAllUserFromDB,
@@ -110,6 +132,7 @@ exports.UserServices = {
     deleteUserInDB,
     updateUserStatusInDB,
     updateUserProfile,
+    updateUserRoleInDB,
 };
 // const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
 //   const session = await mongoose.startSession();

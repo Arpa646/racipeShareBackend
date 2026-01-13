@@ -91,6 +91,7 @@ interface UpdateUserData {
   email?: string; // Optional field
   phone?: string; // Optional field
   address?: string; // Optional field
+  image?: string; // Optional field for profile image
 }
 const updateUserProfile = async (
   userId: string,
@@ -106,6 +107,7 @@ const updateUserProfile = async (
           email: updateData.email,
           phone: updateData.phone,
           address: updateData.address,
+          image: updateData.image,
         },
       },
       { new: true, runValidators: true } // Return the updated document, and run validators
@@ -125,6 +127,33 @@ const updateUserProfile = async (
   }
 };
 
+const updateUserRoleInDB = async (userId: string, role: 'admin' | 'user') => {
+  try {
+    // Validate role
+    if (role !== 'admin' && role !== 'user') {
+      throw new Error("Invalid role. Role must be 'admin' or 'user'");
+    }
+
+    // Find the user by ID and update the role
+    const updatedUser = await UserRegModel.findByIdAndUpdate(
+      userId,
+      { role },
+      { new: true, runValidators: true } // Return the updated document, and run validators
+    );
+
+    if (!updatedUser) {
+      throw new Error("User not found");
+    }
+
+    return updatedUser;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("An unknown error occurred");
+  }
+};
+
 export const UserServices = {
   createUserIntoDB,
   getAllUserFromDB,
@@ -132,6 +161,7 @@ export const UserServices = {
   deleteUserInDB,
   updateUserStatusInDB,
   updateUserProfile,
+  updateUserRoleInDB,
 };
 // const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
 
