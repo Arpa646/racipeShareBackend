@@ -2,7 +2,61 @@ import mongoose from "mongoose";
 import BookModel from "../Books/book.model";
 import ShelfModel from "../Shelf/shelf.model";
 import ReviewModel from "../Reviews/review.model";
+import GenreModel from "../Genres/genre.model";
 import { BookRecommendation, RecommendationResponse } from "./recommendation.interface";
+
+/**
+ * Helper function to ensure genre is populated
+ */
+const populateGenres = async (books: any[]): Promise<any[]> => {
+  const genreIds = new Set<string>();
+  
+  // Collect all genre IDs that need to be populated
+  books.forEach((book: any) => {
+    if (book.genre) {
+      const genreId = typeof book.genre === 'object' && book.genre._id 
+        ? book.genre._id.toString() 
+        : book.genre.toString();
+      if (genreId && !(typeof book.genre === 'object' && book.genre.name)) {
+        genreIds.add(genreId);
+      }
+    }
+  });
+
+  // If all genres are already populated, return as is
+  if (genreIds.size === 0) {
+    return books;
+  }
+
+  // Fetch all genres that need to be populated
+  const genres = await GenreModel.find({
+    _id: { $in: Array.from(genreIds).map(id => new mongoose.Types.ObjectId(id)) },
+    isDeleted: false,
+  }).lean();
+
+  // Create a map of genre ID to genre object
+  const genreMap = new Map();
+  genres.forEach((genre: any) => {
+    genreMap.set(genre._id.toString(), genre);
+  });
+
+  // Populate genres in books
+  return books.map((book: any) => {
+    if (book.genre) {
+      const genreId = typeof book.genre === 'object' && book.genre._id 
+        ? book.genre._id.toString() 
+        : book.genre.toString();
+      
+      if (genreId && !(typeof book.genre === 'object' && book.genre.name)) {
+        const populatedGenre = genreMap.get(genreId);
+        if (populatedGenre) {
+          book.genre = populatedGenre;
+        }
+      }
+    }
+    return book;
+  });
+};
 
 /**
  * Get personalized book recommendations for a user
@@ -118,13 +172,16 @@ const getPersonalizedRecommendationsForUser = async (
     ? { genre: { $in: favoriteGenres.map((id) => new mongoose.Types.ObjectId(id)) } }
     : {};
 
-  const candidateBooks = await BookModel.find({
+  let candidateBooks = await BookModel.find({
     _id: { $nin: excludeBookIds },
     isDeleted: false,
     isPublished: true,
     ...genreQuery,
   })
-    .populate("genre")
+    .populate({
+      path: "genre",
+      model: "Genre"
+    })
     .lean();
 
   if (candidateBooks.length === 0) {
@@ -134,11 +191,17 @@ const getPersonalizedRecommendationsForUser = async (
       isDeleted: false,
       isPublished: true,
     })
-      .populate("genre")
+      .populate({
+        path: "genre",
+        model: "Genre"
+      })
       .limit(50)
       .lean();
     candidateBooks.push(...allBooks);
   }
+
+  // Ensure genres are populated
+  candidateBooks = await populateGenres(candidateBooks);
 
   // Get ratings for candidate books
   const bookIds = candidateBooks.map((book: any) => book._id);
@@ -259,15 +322,23 @@ const getFallbackRecommendations = async (
   const excludeIds = excludeBookIds.map((id) => new mongoose.Types.ObjectId(id));
 
   // Get all published books
-  const allBooks = await BookModel.find({
+  let allBooks = await BookModel.find({
     _id: { $nin: excludeIds },
     isDeleted: false,
     isPublished: true,
-  }).lean();
+  })
+    .populate({
+      path: "genre",
+      model: "Genre"
+    })
+    .lean();
 
   if (allBooks.length === 0) {
     return recommendations;
   }
+
+  // Ensure genres are populated
+  allBooks = await populateGenres(allBooks);
 
   const bookIds = allBooks.map((book: any) => book._id);
 

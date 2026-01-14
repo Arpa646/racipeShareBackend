@@ -17,6 +17,53 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const book_model_1 = __importDefault(require("../Books/book.model"));
 const shelf_model_1 = __importDefault(require("../Shelf/shelf.model"));
 const review_model_1 = __importDefault(require("../Reviews/review.model"));
+const genre_model_1 = __importDefault(require("../Genres/genre.model"));
+/**
+ * Helper function to ensure genre is populated
+ */
+const populateGenres = (books) => __awaiter(void 0, void 0, void 0, function* () {
+    const genreIds = new Set();
+    // Collect all genre IDs that need to be populated
+    books.forEach((book) => {
+        if (book.genre) {
+            const genreId = typeof book.genre === 'object' && book.genre._id
+                ? book.genre._id.toString()
+                : book.genre.toString();
+            if (genreId && !(typeof book.genre === 'object' && book.genre.name)) {
+                genreIds.add(genreId);
+            }
+        }
+    });
+    // If all genres are already populated, return as is
+    if (genreIds.size === 0) {
+        return books;
+    }
+    // Fetch all genres that need to be populated
+    const genres = yield genre_model_1.default.find({
+        _id: { $in: Array.from(genreIds).map(id => new mongoose_1.default.Types.ObjectId(id)) },
+        isDeleted: false,
+    }).lean();
+    // Create a map of genre ID to genre object
+    const genreMap = new Map();
+    genres.forEach((genre) => {
+        genreMap.set(genre._id.toString(), genre);
+    });
+    // Populate genres in books
+    return books.map((book) => {
+        if (book.genre) {
+            const genreId = typeof book.genre === 'object' && book.genre._id
+                ? book.genre._id.toString()
+                : book.genre.toString();
+            if (genreId && !(typeof book.genre === 'object' && book.genre.name)) {
+                const populatedGenre = genreMap.get(genreId);
+                if (populatedGenre) {
+                    book.genre = populatedGenre;
+                }
+            }
+        }
+        return book;
+    });
+});
 /**
  * Get personalized book recommendations for a user
  */
@@ -107,8 +154,11 @@ const getPersonalizedRecommendationsForUser = (userId, readBookIds, favoriteGenr
     const genreQuery = favoriteGenres.length > 0
         ? { genre: { $in: favoriteGenres.map((id) => new mongoose_1.default.Types.ObjectId(id)) } }
         : {};
-    const candidateBooks = yield book_model_1.default.find(Object.assign({ _id: { $nin: excludeBookIds }, isDeleted: false, isPublished: true }, genreQuery))
-        .populate("genre")
+    let candidateBooks = yield book_model_1.default.find(Object.assign({ _id: { $nin: excludeBookIds }, isDeleted: false, isPublished: true }, genreQuery))
+        .populate({
+        path: "genre",
+        model: "Genre"
+    })
         .lean();
     if (candidateBooks.length === 0) {
         // If no books in favorite genres, get books from any genre
@@ -117,11 +167,16 @@ const getPersonalizedRecommendationsForUser = (userId, readBookIds, favoriteGenr
             isDeleted: false,
             isPublished: true,
         })
-            .populate("genre")
+            .populate({
+            path: "genre",
+            model: "Genre"
+        })
             .limit(50)
             .lean();
         candidateBooks.push(...allBooks);
     }
+    // Ensure genres are populated
+    candidateBooks = yield populateGenres(candidateBooks);
     // Get ratings for candidate books
     const bookIds = candidateBooks.map((book) => book._id);
     const ratingAggregation = yield review_model_1.default.aggregate([
@@ -224,14 +279,21 @@ const getFallbackRecommendations = (userId, excludeBookIds) => __awaiter(void 0,
     const recommendations = [];
     const excludeIds = excludeBookIds.map((id) => new mongoose_1.default.Types.ObjectId(id));
     // Get all published books
-    const allBooks = yield book_model_1.default.find({
+    let allBooks = yield book_model_1.default.find({
         _id: { $nin: excludeIds },
         isDeleted: false,
         isPublished: true,
-    }).lean();
+    })
+        .populate({
+        path: "genre",
+        model: "Genre"
+    })
+        .lean();
     if (allBooks.length === 0) {
         return recommendations;
     }
+    // Ensure genres are populated
+    allBooks = yield populateGenres(allBooks);
     const bookIds = allBooks.map((book) => book._id);
     // Get ratings and shelf counts
     const ratingAggregation = yield review_model_1.default.aggregate([
